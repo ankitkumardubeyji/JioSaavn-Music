@@ -40,7 +40,7 @@ function SongAlbum(){
        
 {
     
-    songs.map((song,index)=><Music songName={song.songName} src={song.coverPath} singer={song.singer} id = {index}/>)
+    songs.map((song,index)=><Music songName={song.songName} src="" singer={song.singer} id = {index}/>)
 }
 </div>
        </div>

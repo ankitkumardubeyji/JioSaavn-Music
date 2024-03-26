@@ -2,7 +2,7 @@
 import useCurrentSong from "../contexts/CurrentSongContext";
 
 function Music({src,songName,singer,id}){
-    const {updateSong,currentSong,updateCurrentAlbumSong} = useCurrentSong();
+    const {updateSong,currentSong,updateCurrentAlbumSong,musicControl} = useCurrentSong();
 
     let songs= [
         {songName:"Desi Kalakar" ,filepath:"songs/12.mp3" , coverPath:"covers/1.jpg" ,singer:'Honey Singh,Neha Kakkar'},
@@ -25,6 +25,7 @@ function Music({src,songName,singer,id}){
         console.log("edhar")
         updateCurrentAlbumSong(songs[index])
         updateSong(songs[e.target.parentElement.className==="song"?e.target.parentElement.id:e.target.id])
+        musicControl(songs[index])
     }
     
     return(
