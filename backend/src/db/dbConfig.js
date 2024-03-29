@@ -6,7 +6,7 @@ import mongoose from "mongoose";
 
 export const connectDb= async()=>{
     try{
-        const connect = await mongoose.connect(`${process.env.MONGOURI}/"JioMusic"`,{
+        const connect = await mongoose.connect(`${process.env.MONGOURI}/JioMusic`,{
             writeConcern:{w:'majority'},
         })
         console.log(`Connected successfully to the database ${connect.connection.host}`)
