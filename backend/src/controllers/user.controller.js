@@ -99,5 +99,62 @@ const registerUser = asyncHandler(async(req,res,next)=>{
     )
 })
 
+const loginUser = asyncHandler(async(req,res,next)=>{
+    const {email,password,username} = req.body;
+    if(!email || !password || !username){
+        throw new ApiError(400,"All fields are required")
+    }
+    
+    const user = await  User.findOne({
+        $or:[{username},{email}]
+    })
 
-export {registerUser};
+    if(!user){
+        throw new ApiError(400,"User doesnt exists")
+    }
+
+    const isPasswordValid = user.isPasswordCorrect(password)
+
+    if(!isPasswordValid){
+        throw new ApiError(400,"Please enter the valid password")
+    }
+
+    const {accessToken,refreshToken} = await generateAccessRefreshToken(user._id)
+    const loggedInUser = await User.findById(user._id).select('-password')
+    return res.status(200)
+    .cookie("accessToken",accessToken)
+    .cookie("refreshToken",refreshToken)
+    .json(new ApiResponse(200,{
+        user:loggedInUser,
+        accessToken,
+        refreshToken 
+    }, "User logged in successfully "));
+})
+
+
+const logOut = asyncHandler(async(req,res,next)=>{
+
+    // finding the user logged in , and unsetting its refreshToken
+    await User.findByIdAndUpdate(req.user?._id,{
+        $unset:{
+            refreshToken:1,
+        }
+    },
+    
+    {
+        new : true, 
+    }
+    )
+
+    const options = {
+        httpOnly:true,
+        secure:true, 
+    }
+
+    return res.status(200)
+    .clearCookie("accessToken",options)
+    .clearCookie("refreshToken",options)
+    .json(new ApiResponse(200,{},"User logged out successfully "))
+})
+
+export {registerUser,loginUser,logOut};

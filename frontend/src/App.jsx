@@ -16,6 +16,8 @@ import {Route} from "react-router-dom"
 import Layout from "./Layout"
 import SongAlbum from './componets/SongAlbum'
 import { CurrentSongProvider } from './contexts/CurrentSongContext'
+import Login from './componets/Login/Login'
+import Register from './componets/Register/Register'
 function App() {
 
   const [currentSong,setCurrentSong] = useState({songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg",singer:"Jollu"});
@@ -68,7 +70,9 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path='/' element= {<Layout/>}>
         <Route path = '' element = {<Home/>}/>
+        <Route path="login" element = {<Login/>}/>
         <Route path='music' element = {<SongAlbum/>}/>
+        <Route path='register' element = {<Register/>}/>
     </Route>
   )
 )

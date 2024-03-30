@@ -1,7 +1,8 @@
 import {Router} from "express"
-import { registerUser } from "../controllers/user.controller.js"
+import { logOut, loginUser, registerUser } from "../controllers/user.controller.js"
 const router = Router()
 import {upload} from "../middleware/multer.middleware.js"
+import { verifyJWT } from "../middleware/auth.middleware.js"
 
 // console.log(registerUser) // was throwing error as the registeredUser was not being properly returned by asynchandler
 
@@ -19,5 +20,12 @@ router.route("/register").post(
         },
     ]),
     registerUser)
+
+ 
+router.route("/login").post(
+    loginUser
+)
+
+router.route("/logout").post(verifyJWT,logOut)
 
     export default router;
