@@ -39,6 +39,6 @@ const songSchema = new mongoose.Schema({
 },{timestamps:true})
 
 
-videoSchema.plugin(mongooseAggregatePaginate)
+songSchema.plugin(mongooseAggregatePaginate)
 
 export const Song = mongoose.model("Song",songSchema)

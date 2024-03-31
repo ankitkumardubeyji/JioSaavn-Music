@@ -16,8 +16,9 @@ app.use(cookieParser())
 
 
 import userRouter from "./router/user.router.js"
+import songRouter from "./router/song.router.js"
 
 app.use('/api/v1/users',userRouter)
-
+app.use('/api/v1/songs',songRouter)
 export {app}
 

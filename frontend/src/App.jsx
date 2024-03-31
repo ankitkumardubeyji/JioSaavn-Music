@@ -18,6 +18,7 @@ import SongAlbum from './componets/SongAlbum'
 import { CurrentSongProvider } from './contexts/CurrentSongContext'
 import Login from './componets/Login/Login'
 import Register from './componets/Register/Register'
+import UploadSong from './componets/UploadSong'
 function App() {
 
   const [currentSong,setCurrentSong] = useState({songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg",singer:"Jollu"});
@@ -73,6 +74,7 @@ const router = createBrowserRouter(
         <Route path="login" element = {<Login/>}/>
         <Route path='music' element = {<SongAlbum/>}/>
         <Route path='register' element = {<Register/>}/>
+        <Route path='upload' element ={<UploadSong/>}/>
     </Route>
   )
 )
