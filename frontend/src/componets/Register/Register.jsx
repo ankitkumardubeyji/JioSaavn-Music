@@ -119,7 +119,7 @@ function Register(){
              alt="preview image"
            />
          ) : (
-           <PersonIcon className="w-24 h-24 rounded-full m-auto" />
+           <PersonIcon style={{ width: 200, height: 200 }} />
          )}
        </label>
 

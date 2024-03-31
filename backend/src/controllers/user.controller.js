@@ -133,7 +133,7 @@ const loginUser = asyncHandler(async(req,res,next)=>{
 
 
 const logOut = asyncHandler(async(req,res,next)=>{
-
+    console.log("came to the backend for the logout")
     // finding the user logged in , and unsetting its refreshToken
     await User.findByIdAndUpdate(req.user?._id,{
         $unset:{
@@ -150,7 +150,7 @@ const logOut = asyncHandler(async(req,res,next)=>{
         httpOnly:true,
         secure:true, 
     }
-
+    console.log("here");
     return res.status(200)
     .clearCookie("accessToken",options)
     .clearCookie("refreshToken",options)

@@ -1,7 +1,30 @@
 
-import {Link, NavLink} from 'react-router-dom'
+import {Link, NavLink, Navigate, useNavigate} from 'react-router-dom'
+import PersonIcon from '@mui/icons-material/Person';
+import {useDispatch, useSelector } from 'react-redux';
+import { logout} from '../Reducer/authSlice';
+
 
 function Header(){
+    const dispatch = useDispatch()
+    const navigate = useNavigate()
+
+    function handleLogOut(event){
+        event.preventDefault()
+        console.log("came here for logout")
+       const res =  dispatch(logout())
+       console.log(res);
+    }
+
+    function handleLogin(event){
+        navigate("/login");
+    }
+
+    const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
+    const data = useSelector(state => state.auth.data)
+    console.log(isLoggedIn)
+    console.log("here comes the data "+data.avatar)
+
     return (
         <>
          <div className="header">
@@ -26,8 +49,9 @@ function Header(){
 
             <div className="side-nav">
                 <a href="">Music Languages</a>
-                <a href="">Log in</a>
-                <a href="">Sign Up</a>
+                {isLoggedIn?(<a href="" onClick={handleLogOut}>LogOut</a>):<a href="" onClick={handleLogin} >Login</a>}
+                {isLoggedIn?(<a href="" style={{borderRadius:"100%", width:"50px", padding:"2px 2px "}}><img src={data.avatar} width={"100%"}/></a>):<a href=""><PersonIcon/></a>}
+                
             </div>
         </nav>
     </div>
