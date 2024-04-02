@@ -157,4 +157,54 @@ const logOut = asyncHandler(async(req,res,next)=>{
     .json(new ApiResponse(200,{},"User logged out successfully "))
 })
 
-export {registerUser,loginUser,logOut};
+const getUserChannelProfile = asyncHandler(async(req,res)=>{
+    const {username} = req.params
+
+    if(!username?.trim()){
+        throw new ApiError("Please provide the username ")
+    }
+
+    // values returned from the aggragtion pipeline are arrays 
+    await User.aggregate([
+        {
+            $match:{
+                username:username?.toLowerCase() // filtering out the document from the User that has the username as mentioned in the Query
+            }
+        },  // at the end of this we have the single document that has the username say yoyo passed in the req.params 
+        
+        
+        // selecting all the documents where the username yoyo is the artist, to find the no of followers of yoyo
+        // here we are joing the follower with the user hence the localfield becomes _id of  user and the foreign field artist of followers model 
+
+        {
+
+            $lookup:{
+                from:"followers",
+                localField:"_id", // id of the selected user passed as the local field 
+                foreignField:"artist",
+                as:"Followers"
+
+            }
+        },
+
+        // selecting all the documents where the username yoyo is the follower, to find no of artists yoyo following
+        // joining follower with user hence localfield id of user and foreignfield follower of followers
+        {
+
+            $lookup:{
+                from:"followers",
+                localField:"_id", // id of the selected user passed as the local field 
+                foreignField:"follower",
+                as:"Following"
+
+            }
+        },
+
+
+    ])
+
+
+    
+})
+
+export {registerUser,loginUser,logOut,getUserChannelProfile};
