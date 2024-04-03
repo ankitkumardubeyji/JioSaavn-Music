@@ -3,6 +3,7 @@ import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import { User } from "../models/user.models.js";
 import { ApiResponse } from "../utils/ApiResponse.js";
 import asyncHandler from "../utils/asyncHandler.js";
+import mongoose from "mongoose";
 
 // function to genrate the accessToken and refreshToken for the user with the given id and store it in the database.
 const generateAccessRefreshToken = async(userId) =>{
@@ -157,7 +158,7 @@ const logOut = asyncHandler(async(req,res,next)=>{
     .json(new ApiResponse(200,{},"User logged out successfully "))
 })
 
-const getUserChannelProfile = asyncHandler(async(req,res)=>{
+const getUserArtistProfile = asyncHandler(async(req,res)=>{
     const {username} = req.params
 
     if(!username?.trim()){
@@ -165,7 +166,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
     }
 
     // values returned from the aggragtion pipeline are arrays 
-    await User.aggregate([
+    const artist = await User.aggregate([
         {
             $match:{
                 username:username?.toLowerCase() // filtering out the document from the User that has the username as mentioned in the Query
@@ -180,7 +181,7 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
 
             $lookup:{
                 from:"followers",
-                localField:"_id", // id of the selected user passed as the local field 
+                localField:"_id", // id of the selected user from above match passed as the local field 
                 foreignField:"artist",
                 as:"Followers"
 
@@ -200,11 +201,142 @@ const getUserChannelProfile = asyncHandler(async(req,res)=>{
             }
         },
 
+        {
+            $addFields:{
+                FollowersCount:{
+                    $size:"$Followers"
+                },
 
-    ])
+                FollowingCount:{
+                    $size:"$Following" // couting the size of the docs received in following
+                },
 
+                // checking if the logged in user is following the artist or not 
+                isFollowing:{
+                    $cond:{
+                        if:{$in:[req.user?._id,"$Followers.follower"]}
+                    }
+                }
+            }
 
+            /*
+                
+You're correct. Apologies for the oversight. In the $cond expression for the isFollowing field, Followers is indeed an array, 
+and we need to extract the follower field from it to check if the logged-in user is among the followers. We can achieve this by
+ using $map to extract the follower field from each element of the Followers array. Here's the corrected version of the $addFields
+  stage:
+{
+    $addFields: {
+        FollowersCount: {
+            $size: "$Followers"
+        },
+        FollowingCount: {
+            $size: "$Following"
+        },
+        isFollowing: {
+            $cond: {
+                if: {
+                    $in: [req.user?._id, { $map: { input: "$Followers", as: "followerDoc", in: "$$followerDoc.follower" } }]
+                },
+                then: true,
+                else: false
+            }
+        }
+    }
+}
+
+            */
+        },
+
+        {
+            $project:{
+                fullName:1,
+                username:1,
+                FollowersCount:1,
+                FollowingCount:1,
+                isFollowing:1,
+                avatar:1, 
+                coverImage:1,
+                createdAt:1, 
+            }
+        }
+    ])   
     
+    if(!artist?.length){
+        throw new ApiError(404,"Requested User doesnt exists ")
+    }
+
+    return res.status(200)
+    .json(new ApiResponse(200,artist[0],"Artist information successfully fetched"))
 })
 
-export {registerUser,loginUser,logOut,getUserChannelProfile};
+
+/*
+Requirements for the listen history
+we will need to perfrom join , in the user watch history we keep on adding the songId , onPerfroming the lookup of the watchHistory
+with the user we will get many of the documents say A , but there also exists song owner , owner is also the user , hence again lookup will 
+be required to be performed ie nested lookup.So inside all the documents of A we will need to perform further join to get the owner info 
+*/
+
+const getListenHistory = asyncHandler(async(req,res)=>{
+    // req.user?._id // this is the string mongodb converts it behind the scenes to mongoose id.
+
+    const user = await User.aggregate([
+        {
+            $match:{ // out of all the docs filtering the current user document
+                _id:new mongoose.Types.ObjectId(req.user._id)
+            }
+        },
+
+        
+
+        {
+            $lookup:{  // joining songs with the current user docs listen History 
+                from:"songs",
+                localField:"listenHistory",
+                foreignField:"_id",
+                as:"listenHistory", 
+                // now we got all the songs docs that are in the listenHistory of the user , but in all the songs owner information is missing 
+                // for that we require to join the user with the song hence we require to further write down the pipelines. 
+                pipeline:[
+                    {
+                        $lookup:{
+                            from:"users",
+                            localField:"owner",
+                            foreignField:"._id",
+                            as:"owner",  // corresponding to owner we will get the array of object of size 1, that we will extract in next stage in addField 
+                            // now we dont what all the infomation of the owner but the limited information.
+
+                            pipeline:[
+                                {
+                                    $project:{
+                                        fullName:1,
+                                        avatar:1,
+                                        username:1,
+                                    }
+                                }
+                            ]
+                        }
+                    },
+
+                    {
+                        $addFields:{
+                            owner:{
+                                $first:"$owner"
+                            }
+                        }
+                    }
+
+
+                ]
+
+            }
+        }
+    ])
+
+    return res.status(200)
+    .json(new ApiResponse(200,user[0].listenHistory,"listen history fetched successfuly"))
+})
+
+
+export {registerUser,loginUser,logOut,getUserArtistProfile,getListenHistory};

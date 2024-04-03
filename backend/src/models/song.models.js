@@ -40,5 +40,6 @@ const songSchema = new mongoose.Schema({
 
 
 songSchema.plugin(mongooseAggregatePaginate)
+songSchema.index({title:"text",description:"text"})
 
 export const Song = mongoose.model("Song",songSchema)

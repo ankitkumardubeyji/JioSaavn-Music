@@ -6,6 +6,7 @@ import PauseIcon from '@mui/icons-material/Pause';
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useEffect, useMemo, useState } from "react";
 import { duration } from "@mui/material";
+import { useSelector } from "react-redux";
 
 
 let songs = [
@@ -26,6 +27,9 @@ let songs = [
 
 function Footer(){
 
+    const song = useSelector((state)=>state.song.songsData)
+   // console.log(song)
+
     const {currentSong,musicControl,audioElement,play,updateSong} = useCurrentSong()
     const [volume,setVolume]  = useState(audioElement.volume)
     const [currentDuration,setCurrentDuration] = useState('')
@@ -41,10 +45,10 @@ function Footer(){
     function playPrev(){
         console.log("previous ganna update karana aa gye ");
         console.log(currentSong)
-        const prevId = currentSong.id
+        const prevId = parseInt(currentSong.id)
         if(prevId>0){
-            updateSong(songs[prevId-1])
-            musicControl(songs[prevId-1]);
+            updateSong(song[prevId-1])
+            musicControl(song[prevId-1]);
         }
     }
 
@@ -52,11 +56,12 @@ function Footer(){
     function playNext(){
         console.log("next ganna update krwane aa gye ")
         console.log(currentSong)
-        const prevId = currentSong.id
+        const prevId = parseInt(currentSong.id)
         console.log(prevId)
+        console.log(song[prevId+1])
         if(prevId<9){
-            updateSong(songs[prevId+1])
-            musicControl(songs[prevId+1]);
+            updateSong(song[prevId+1],prevId+1)
+            musicControl(song[prevId+1]);
            
         }
     }
@@ -106,10 +111,10 @@ function Footer(){
             <input type="range" name="range" id="myProgressBar" min="0" value={progress} max="100" onChange={updateDuration} />
             <div className="footer">
                 <div className="songInfo">
-                    <img src= {currentSong.coverPath} width="42px" alt="" id="gif"/>
+                    <img src= {currentSong.thumbnail} width="42px" alt="" id="gif"/>
                     <div className="titles">
-                        <p id="masterSongName">{currentSong.songName}<br/></p>
-                        <p id="singer">{currentSong.singer}</p>
+                        <p id="masterSongName">{currentSong.title}<br/></p>
+                        <p id="singer">{currentSong.owner}</p>
                     </div>
                      
                 </div>

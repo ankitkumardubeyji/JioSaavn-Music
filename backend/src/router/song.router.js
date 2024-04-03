@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { upload } from "../middleware/multer.middleware.js";
-import { publishSong } from "../controllers/song.controller.js";
+import { getAllSongs, publishSong } from "../controllers/song.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
 
@@ -27,5 +27,7 @@ router
         ]),
         publishSong
     );
+
+ router.route("/").get(getAllSongs);   
 
 export default router;

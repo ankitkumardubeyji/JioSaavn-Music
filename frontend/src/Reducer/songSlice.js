@@ -9,7 +9,7 @@ const initialState = {
 }
 
 
-export const publishSong = createAsyncThunk("/video/publishSong",async(data)=>{
+export const publishSong = createAsyncThunk("/song/publishSong",async(data)=>{
     console.log("came here for uploading the data")
 
     console.log(data)
@@ -34,12 +34,38 @@ export const publishSong = createAsyncThunk("/video/publishSong",async(data)=>{
 })
 
 
+export const getSongs = createAsyncThunk("song/getSong" ,async(data)=>{
+    let result = {}
+    console.log("came here for getting the songs ")
+    try{
+        const res = axios.get("/api/v1/songs/");
+        toast.promise(res,{
+            loading:"wait getting the songs!",
+            success:(data)=>{
+            result = data?.data?.data
+                return data?.data?.message 
+            }
+        })
+
+        await res;
+        return  result;
+    }
+    catch(err){
+        toast.error(err.response?.data?.message)
+    }
+});
+
+
 const songSlice = createSlice({
     name:"song",
     initialState,
     reducers:{},
     extraReducers:(builder) =>{
         builder
+        .addCase(getSongs.fulfilled,(state,action)=>{
+            state.songsData = action.payload;
+            console.log(state.songsData)
+        })
 
     }
 })
@@ -47,7 +73,7 @@ const songSlice = createSlice({
 
 export const {} = songSlice.actions;
 
-export default songSlice.reducers;
+export default songSlice.reducer;
 
 
 

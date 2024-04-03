@@ -5,7 +5,7 @@
 */
 
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 
@@ -19,18 +19,29 @@ import { CurrentSongProvider } from './contexts/CurrentSongContext'
 import Login from './componets/Login/Login'
 import Register from './componets/Register/Register'
 import UploadSong from './componets/UploadSong'
+import { useDispatch } from 'react-redux'
+import { getSongs } from './Reducer/songSlice'
 function App() {
+const dispatch = useDispatch()
+  useEffect(()=>{
+    dispatch(getSongs())
+  },[])
 
-  const [currentSong,setCurrentSong] = useState({songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg",singer:"Jollu"});
+  const [currentSong,setCurrentSong] = useState(JSON.parse(localStorage.getItem("data"))||{id:0,title: "Warriyo - Mortals [NCS Release]", songFile: "songs/1.mp3", thumbnail: "covers/1.jpg",owner:"Jollu"});
   const [play,setPlay] = useState(false)
   const [audioElement,setAudioElement] = useState(new Audio('songs/1.mp3'))
   const [currentAlbumSong,setCurrentAlbumSong] = useState({songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg",singer:"Jollu"})
 
-  const updateSong = (song)=> {
-    setCurrentSong(song)}
+  const updateSong = (song,index)=> {
+    console.log("came here for updating the song")
+    console.log(song)
+    setCurrentSong({id:index,...song})
+    localStorage.setItem("currentSong",JSON.stringify({id:index,...song}))
+  }
 
   const updateCurrentAlbumSong= (song)=>{
     setCurrentSong(song)
+    console.log(currentSong)
     setCurrentAlbumSong(song)
     
   } 
@@ -38,9 +49,8 @@ function App() {
   const musicControl = (song) =>{
     console.log("chalo humare yaha to aaya ")
     console.log(song)
-    const currentAudio = audioElement.src.substring(audioElement.src.lastIndexOf('/')+1,audioElement.src.length)
-    const newAudio = song.filePath.substring(song.filePath.lastIndexOf('/')+1,song.filePath.length)
-      
+    const currentAudio = audioElement.src
+    const newAudio = song.songFile
     // case if the audio that has been paused has been played again
       if(play==false && currentAudio == newAudio){
           audioElement.play()  
@@ -50,7 +60,7 @@ function App() {
       // if audio is being played now and new audio has been clicked 
       else if(currentAudio!=newAudio){
         console.log("edhar bhi phuch hi gya tha ")
-        audioElement.src= song.filePath
+        audioElement.src= newAudio
         setAudioElement(audioElement);
         console.log(audioElement.src)
         audioElement.play()

@@ -1,7 +1,10 @@
 import { useState } from "react";
 import useCurrentSong from "../contexts/CurrentSongContext";
+import { useSelector } from "react-redux";
 function Image(props){
     const {updateSong,currentSong,musicControl} = useCurrentSong();
+    const song = useSelector((state)=>state.song.songsData)
+    console.log(song)
 
     let songs = [
         {id:0,songName: "Warriyo - Mortals [NCS Release]", filePath: "songs/1.mp3", coverPath: "covers/1.jpg",singer:"Jollu"},
@@ -20,8 +23,8 @@ function Image(props){
         let index = e.target.parentElement.className==="box1"?e.target.parentElement.id:e.target.id
        console.log(songs[e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id]) 
        console.log(e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id)
-       updateSong(songs[e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id])
-       musicControl(songs[index])
+       updateSong(song[e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id],index)
+       musicControl(song[index])
        
     }
     

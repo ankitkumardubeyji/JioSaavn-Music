@@ -1,16 +1,19 @@
+import { useSelector } from "react-redux";
 import useCurrentSong from "../contexts/CurrentSongContext";
 import Image  from "./Image"
 
 
 
 function Home(){
+    const song = useSelector((state)=>state.song.songsData)
+    console.log(song)
     const {updateSong,currentSong} = useCurrentSong();
 
     const Images = document.querySelectorAll("Image");
     Images.forEach((image)=>{
         image.addEventListener('click',function(e){
-                console.log("here")
-                updateSong(songs[e.target.key])
+                console.log("here my love")
+                updateSong(song[e.target.id])
                 console.log(currentSong)
         })
     })
@@ -34,7 +37,7 @@ function Home(){
         <>  
             <div className="box">
             {
-                songs.map((song,index)=> <Image src= {song.coverPath} songName ={song.songName} audiosrc= {song.filePath} id= {index}/>)
+                song.map((song,index)=> <Image src= {song.thumbnail} songName ={song.title} audiosrc= {song.songFile} id= {index}/>)
             }
 
             </div>
