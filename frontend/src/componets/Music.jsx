@@ -10,7 +10,7 @@ function Music({thumbnail,songName,singer,id,type}){
     let song1 =  useSelector(state=>state.song.searchData)
     let albumData =  useSelector(state=>state.song.albumData)
     let song3 = useSelector(state=>state.song.listenHistory)
-
+    let song4 = useSelector((state)=>state.song.yourSongs)
     let song2 = albumData.songs;
     let owner2 = albumData.fullName;
     let artist = "";
@@ -23,6 +23,10 @@ function Music({thumbnail,songName,singer,id,type}){
     }
     else if(type=="his"){
         song = song3;
+    }
+
+    else if(type=="ys"){
+        song = song4
     }
     else{
         song = song2

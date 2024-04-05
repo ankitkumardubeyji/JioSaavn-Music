@@ -23,6 +23,7 @@ import UploadSong from './componets/UploadSong'
 import { useDispatch } from 'react-redux'
 import { addSongToListenHistory, getSongs } from './Reducer/songSlice'
 import Search from './componets/Search'
+import YourSongs from './componets/YourSongs'
 function App() {
 
   const dispatch = useDispatch()
@@ -88,6 +89,7 @@ const router = createBrowserRouter(
         <Route path='upload' element ={<UploadSong/>}/>
         <Route path='search' element ={<Search/>}/>
         <Route path='history' element ={<History/>}/>
+        <Route path='ys' element ={<YourSongs/>}/>
     </Route>
   )
 )

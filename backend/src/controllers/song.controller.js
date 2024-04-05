@@ -55,6 +55,25 @@ const publishSong = asyncHandler(async(req,res,next)=>{
 })
 
 
+const getYourSongs = asyncHandler(async(req,res)=>{
+    
+    const songs = await Song.find({owner:req.user._id})
+    let Songs = []
+
+    if(songs.length==0){
+        throw new ApiError(400,"You have not uploaded Any Song")
+    }
+
+    songs.map((song)=>{
+        Songs.push({owner:req.user.username,thumbnail:song.thumbnail,songFile:song.songFile,title:song.title,description:song.description})
+    })
+
+    return res.status(200)
+    .json(new ApiResponse(200,Songs,"Your songs successfully fetched "))
+
+
+})
+
 const getAllSongs = asyncHandler(async(req,res)=>{
     console.log("vabbbbbbb");
    // checking if any of the below has been passed by the user as query params otherwise assigning the below with the default values  
@@ -166,4 +185,4 @@ const getAllSongs = asyncHandler(async(req,res)=>{
     });
 
 
-export {publishSong,getAllSongs}
+export {publishSong,getAllSongs,getYourSongs}

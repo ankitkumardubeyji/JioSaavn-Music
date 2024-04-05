@@ -35,19 +35,41 @@ function Footer(){
     let song3 = useSelector((state)=>state.song.searchData)
 
     let song =""
+
+    let song4 = useSelector((state)=>state.song.listenHistory)
+
+    let song5 = useSelector((state)=>state.song.yourSongs)
     const location = useLocation()
     
     if(location.pathname=='/'){
         song = song1
+        console.log(location.pathname+" "+song)
     }
 
     else if(location.pathname=='/music'){
         song = song2
+        console.log(location.pathname+" "+song)
     }
 
     else if(location.pathname=='/search'){
         song = song3
+        console.log(location.pathname+" "+song)
     }
+
+    else if(location.pathname=='/ys'){
+        
+        song = song5 
+        console.log(location.pathname+" "+song)
+    }
+    
+
+    else if(location.pathname=='/history'){
+
+        song = song4 
+        console.log(location.pathname+" "+song)
+    }
+
+   
 
     console.log(song)
 

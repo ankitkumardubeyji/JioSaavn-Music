@@ -12,6 +12,7 @@ const initialState = {
     currentSongsData:[],
     listenHistory:JSON.parse(localStorage.getItem("listenHistory"))|| [],
     addedSongId:JSON.parse(localStorage.getItem("addedSongId"))||[],
+    yourSongs:JSON.parse(localStorage.getItem("yourSongs"))||[]
 }
 
 
@@ -134,6 +135,22 @@ let result = {}
 
   })
 
+  export const getYourSongs = createAsyncThunk("songs/YourSongs",async()=>{
+    let result = []
+    const res = axios.get("api/v1/songs/ys");
+    toast.promise(res,{
+        loading:"wait getting your songs",
+        success:(data)=>{
+            console.log(data?.data?.data)
+            result = data?.data?.data;
+            return data?.data?.message 
+        }
+    })
+
+    await res;
+    return result;
+  })
+
 const songSlice = createSlice({
     name:"song",
     initialState,
@@ -187,6 +204,12 @@ const songSlice = createSlice({
             }
             console.log(state.listenHistory)
             localStorage.setItem("listenHistory",JSON.stringify(state.listenHistory))    
+        })
+
+        .addCase(getYourSongs.fulfilled,(state,action)=>{
+            state.yourSongs = action.payload
+            localStorage.setItem("yourSongs",JSON.stringify(state.yourSongs))
+            console.log(state.yourSongs)
         })
 
     }
