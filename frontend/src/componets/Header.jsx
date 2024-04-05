@@ -2,7 +2,9 @@
 import {Link, NavLink, Navigate, useNavigate} from 'react-router-dom'
 import PersonIcon from '@mui/icons-material/Person';
 import {useDispatch, useSelector } from 'react-redux';
-import { logout} from '../Reducer/authSlice';
+import {logout} from '../Reducer/authSlice';
+import { useState } from 'react';
+import { getArtistProfile, getSongs, searchSongs } from '../Reducer/songSlice';
 
 
 function Header(){
@@ -22,9 +24,28 @@ function Header(){
 
     const isLoggedIn = useSelector((state) => state?.auth?.isLoggedIn);
     const data = useSelector(state => state.auth.data)
+    const albumData = useSelector(state=>state.song.albumData)
     console.log(isLoggedIn)
     console.log("here comes the data "+data.avatar)
 
+    
+
+    function handleSubmit(e){
+        e.preventDefault()
+        console.log("here came for the submisson")
+        console.log(searchValue)
+        let searchQuery = `?query=${searchValue}`
+        dispatch(getArtistProfile(searchValue)).then(()=>navigate("/music"))
+       dispatch(searchSongs(searchQuery)).then(()=>navigate("/search"))
+
+    
+       
+       
+        /*
+        )
+        */
+    }
+const [searchValue,setSearchValue] = useState("")
     return (
         <>
          <div className="header">
@@ -40,8 +61,8 @@ function Header(){
 
             <div className="search-box">
                 <p>
-                    <form action="/submit" method="POST">
-                        <input className="form-input" type="text" name="search" placeholder="Article Search"/>
+                    <form onSubmit={handleSubmit}>
+                        <input className="form-input" type="text" name="search" placeholder="Song Search" value={searchValue} onChange={(e)=>setSearchValue(e.target.value)}/>
                         <button className="btn"><img src="search.png" alt=""/></button>
                     </form>
                 </p>

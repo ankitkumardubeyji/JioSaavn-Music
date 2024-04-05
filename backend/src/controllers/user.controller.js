@@ -165,6 +165,9 @@ const getUserArtistProfile = asyncHandler(async(req,res)=>{
         throw new ApiError("Please provide the username ")
     }
 
+    const user = await User.find({username:username})
+    console.log(user[0]._id)
+
     // values returned from the aggragtion pipeline are arrays 
     const artist = await User.aggregate([
         {
@@ -202,6 +205,25 @@ const getUserArtistProfile = asyncHandler(async(req,res)=>{
         },
 
         {
+            $lookup:{
+                from:"songs",
+                localField:"_id",
+                foreignField:"owner",
+                as:"songs",
+                pipeline:[
+                    {
+                        $project:{
+                            thumbnail:1,
+                            songFile:1,
+                            title:1,
+                            description:1 
+                        }
+                    }
+                ]
+            }
+        },
+
+        {
             $addFields:{
                 FollowersCount:{
                     $size:"$Followers"
@@ -214,7 +236,9 @@ const getUserArtistProfile = asyncHandler(async(req,res)=>{
                 // checking if the logged in user is following the artist or not 
                 isFollowing:{
                     $cond:{
-                        if:{$in:[req.user?._id,"$Followers.follower"]}
+                        if:{$in:[req.user?._id,"$Followers.follower"]},
+                        then:true,
+                        else:false,
                     }
                 }
             }
@@ -258,6 +282,7 @@ and we need to extract the follower field from it to check if the logged-in user
                 avatar:1, 
                 coverImage:1,
                 createdAt:1, 
+                songs:1,
             }
         }
     ])   
@@ -283,41 +308,42 @@ const getListenHistory = asyncHandler(async(req,res)=>{
 
     const user = await User.aggregate([
         {
-            $match:{ // out of all the docs filtering the current user document
-                _id:new mongoose.Types.ObjectId(req.user._id)
+            // got the document whose watch history is to be found out
+            $match:{
+                _id:new mongoose.Types.ObjectId(req.user?._id)
             }
         },
 
-        
-
         {
-            $lookup:{  // joining songs with the current user docs listen History 
+            $lookup:{
+                // getting multiple videos documents , getting all the videos whose id matches with the user watchHistory
                 from:"songs",
                 localField:"listenHistory",
                 foreignField:"_id",
-                as:"listenHistory", 
-                // now we got all the songs docs that are in the listenHistory of the user , but in all the songs owner information is missing 
-                // for that we require to join the user with the song hence we require to further write down the pipelines. 
+                as:"listenHistory",
+
+                // in all the video documents individually we are adding the information of the required user, getting the user whose id matches with current individual video owner
                 pipeline:[
                     {
                         $lookup:{
                             from:"users",
                             localField:"owner",
-                            foreignField:"._id",
-                            as:"owner",  // corresponding to owner we will get the array of object of size 1, that we will extract in next stage in addField 
-                            // now we dont what all the infomation of the owner but the limited information.
-
+                            foreignField:"_id",
+                            as:"owner",
+                       // we want limited information of the user to be stored corresponding to  the ownwer     
                             pipeline:[
                                 {
                                     $project:{
                                         fullName:1,
-                                        avatar:1,
-                                        username:1,
+                                        userName:1,
+                                        avatar:1
                                     }
                                 }
                             ]
                         }
                     },
+
+                    // extracting the object from the array and getting stored in the owner
 
                     {
                         $addFields:{
@@ -332,11 +358,47 @@ const getListenHistory = asyncHandler(async(req,res)=>{
 
             }
         }
+
     ])
 
     return res.status(200)
-    .json(new ApiResponse(200,user[0].listenHistory,"listen history fetched successfuly"))
-})
+    .json(new ApiResponse(200,
+        user[0].listenHistory,
+        "listen history fetched successfully"
+        ))
+   
+    })
+
+const addSongToListenHistory = asyncHandler(async(req, res) => {
+    console.log*("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+    console.log("watch history update krane aaye hi mhi")
+    let {songId} = req.params
+   
+    const user = await User.findById(req.user?._id)
+    
+    
+    console.log(user.watchHistory)
+    user.listenHistory = user.listenHistory.filter((item)=>item!=songId)
+    console.log(user.watchHistory)
+   
+    if(user.listenHistory.length==0){
+        user.listenHistory.push(new mongoose.Types.ObjectId(songId))
+    }
+    else{
+        user.listenHistory.unshift(new mongoose.Types.ObjectId(songId));
+    }
+  
+  // user.listenHistory = []
+    await user.save({validateBeforeSave:false})
+    console.log("there in watch history")
+    const updatedUser = await User.findById(req.user?._id)
+    console.log("-----------------------------------------------------------------------------------------")
+    console.log(updatedUser.listenHistory)
+    console.log("*****************************************************************************************")
+    res.status(200)
+    .json(new ApiResponse(200,updatedUser,"User watch history successfully updated"))
+});
+  
 
 
-export {registerUser,loginUser,logOut,getUserArtistProfile,getListenHistory};
+export {registerUser,loginUser,logOut,getUserArtistProfile,getListenHistory,addSongToListenHistory};

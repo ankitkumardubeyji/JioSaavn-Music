@@ -12,7 +12,7 @@ const followerSchema = mongoose.Schema({
     }
 },{timestamps:true})
 
-export const Follower = mongoose.model("Follower","followerSchema")
+export const Follower = mongoose.model("Follower",followerSchema);
 
 // Discussion on the follower model
 // We have all the required information about the user/artist but we dont have info about the no of followers the artist and no of artist

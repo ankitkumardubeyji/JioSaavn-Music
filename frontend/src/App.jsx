@@ -17,15 +17,15 @@ import Layout from "./Layout"
 import SongAlbum from './componets/SongAlbum'
 import { CurrentSongProvider } from './contexts/CurrentSongContext'
 import Login from './componets/Login/Login'
+import History from './componets/History'
 import Register from './componets/Register/Register'
 import UploadSong from './componets/UploadSong'
 import { useDispatch } from 'react-redux'
-import { getSongs } from './Reducer/songSlice'
+import { addSongToListenHistory, getSongs } from './Reducer/songSlice'
+import Search from './componets/Search'
 function App() {
-const dispatch = useDispatch()
-  useEffect(()=>{
-    dispatch(getSongs())
-  },[])
+
+  const dispatch = useDispatch()
 
   const [currentSong,setCurrentSong] = useState(JSON.parse(localStorage.getItem("data"))||{id:0,title: "Warriyo - Mortals [NCS Release]", songFile: "songs/1.mp3", thumbnail: "covers/1.jpg",owner:"Jollu"});
   const [play,setPlay] = useState(false)
@@ -35,14 +35,15 @@ const dispatch = useDispatch()
   const updateSong = (song,index)=> {
     console.log("came here for updating the song")
     console.log(song)
-    setCurrentSong({id:index,...song})
+    setCurrentSong({id:index,owner:song.owner,thumbnail:song.thumbnail,songFile:song.songFile,title:song.title})
+    dispatch(addSongToListenHistory(song._id))
     localStorage.setItem("currentSong",JSON.stringify({id:index,...song}))
   }
 
-  const updateCurrentAlbumSong= (song)=>{
-    setCurrentSong(song)
+  const updateCurrentAlbumSong= (song,index)=>{
+    setCurrentAlbumSong({id:index,owner:song.artist,thumbnail:song.thumbnail,songFile:song.songFile,title:song.title})
     console.log(currentSong)
-    setCurrentAlbumSong(song)
+    setCurrentSong({id:index,owner:song.artist,thumbnail:song.thumbnail,songFile:song.songFile,title:song.title})
     
   } 
 
@@ -85,6 +86,8 @@ const router = createBrowserRouter(
         <Route path='music' element = {<SongAlbum/>}/>
         <Route path='register' element = {<Register/>}/>
         <Route path='upload' element ={<UploadSong/>}/>
+        <Route path='search' element ={<Search/>}/>
+        <Route path='history' element ={<History/>}/>
     </Route>
   )
 )

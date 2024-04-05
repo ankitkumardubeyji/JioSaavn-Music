@@ -2,8 +2,11 @@ import { useState } from "react";
 import useCurrentSong from "../contexts/CurrentSongContext";
 import { useSelector } from "react-redux";
 function Image(props){
+    console.log(props)
     const {updateSong,currentSong,musicControl} = useCurrentSong();
-    const song = useSelector((state)=>state.song.songsData)
+      let song = useSelector((state)=>state.song.songsData)
+      
+   
     console.log(song)
 
     let songs = [
@@ -25,6 +28,7 @@ function Image(props){
        console.log(e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id)
        updateSong(song[e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id],index)
        musicControl(song[index])
+       console.log(currentSong)
        
     }
     

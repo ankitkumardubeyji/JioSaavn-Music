@@ -1,5 +1,5 @@
 import {Router} from "express"
-import { getListenHistory, getUserArtistProfile, logOut, loginUser, registerUser } from "../controllers/user.controller.js"
+import { addSongToListenHistory, getListenHistory, getUserArtistProfile, logOut, loginUser, registerUser } from "../controllers/user.controller.js"
 const router = Router()
 import {upload} from "../middleware/multer.middleware.js"
 import { verifyJWT } from "../middleware/auth.middleware.js"
@@ -31,5 +31,9 @@ router.route("/logout").post(verifyJWT,logOut)
 router.route("/a/:username").get(verifyJWT,getUserArtistProfile);
 
 router.route("/history").get(verifyJWT,getListenHistory)
+
+router.route("/alh/:songId").patch(verifyJWT,addSongToListenHistory)
+
+
 
 export default router;

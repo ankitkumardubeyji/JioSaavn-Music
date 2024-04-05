@@ -58,7 +58,7 @@ const publishSong = asyncHandler(async(req,res,next)=>{
 const getAllSongs = asyncHandler(async(req,res)=>{
     console.log("vabbbbbbb");
    // checking if any of the below has been passed by the user as query params otherwise assigning the below with the default values  
-    let {page=1,limit=10,query,sortBy,sortType,userId} = req.query;
+    let {page=1,limit=12,query,sortBy,sortType,userId} = req.query;
 
     // parsing the page and the limit
     page = parseInt(page,10); // here 10 denotes the decimal 
@@ -122,10 +122,39 @@ const getAllSongs = asyncHandler(async(req,res)=>{
         pipeline.push({
             $limit:limit 
         });
+
+        pipeline.push({
+            $lookup:{
+                from:"users",
+                localField:"owner",
+                foreignField:"_id",
+                as:"owner",
+                pipeline:[
+                    {
+                        $project:{
+                            fullName:1,
+                            _id:0
+                           
+                        }
+                    }
+                ]
+            },
+        })
+
+        pipeline.push({
+            $addFields:{
+                owner:{
+                    $first:"$owner"
+                }
+            }
+        })
+
     
         // executing the aggregation pipeline
         const songs = await Song.aggregate(pipeline)
-
+            songs.map((song)=>{
+                song.owner = song.owner.fullName
+            })
         if(!songs || songs.length === 0){
             throw new ApiError(404,"songs not found ");
         }

@@ -1,9 +1,34 @@
 
+import { useSelector } from "react-redux";
 import useCurrentSong from "../contexts/CurrentSongContext";
+import zIndex from "@mui/material/styles/zIndex";
 
-function Music({src,songName,singer,id}){
+function Music({thumbnail,songName,singer,id,type}){
+    console.log(thumbnail)
     const {updateSong,currentSong,updateCurrentAlbumSong,musicControl} = useCurrentSong();
+   
+    let song1 =  useSelector(state=>state.song.searchData)
+    let albumData =  useSelector(state=>state.song.albumData)
+    let song3 = useSelector(state=>state.song.listenHistory)
 
+    let song2 = albumData.songs;
+    let owner2 = albumData.fullName;
+    let artist = "";
+
+
+    let song=""
+
+    if(type=="song"){
+        song = song1 
+    }
+    else if(type=="his"){
+        song = song3;
+    }
+    else{
+        song = song2
+        artist = owner2;
+    }
+console.log(song)
     let songs= [
         {songName:"Desi Kalakar" ,filepath:"songs/12.mp3" , coverPath:"covers/1.jpg" ,singer:'Honey Singh,Neha Kakkar'},
         {songName:"I am Your Dj Tonight" ,filepath:"songs/15.mp3" , coverPath:"covers/2.jpg", singer:'Honey Singh,Badhshah'},
@@ -15,23 +40,24 @@ function Music({src,songName,singer,id}){
         {songName:"Blue Eyes" ,filepath:"songs/13.mp3" , coverPath:"covers/8.jpg", singer:'Yo Yo Honey Singh,Justin'},
     ]
     function update(e){
-        
+        console.log("came here for updating the album song ")
         let index = e.target.parentElement.className==="song"?e.target.parentElement.id:e.target.id
         console.log(index)
-        if(songs[index]===undefined || songs[index]===null ){
+        if(song[index]===undefined || song[index]===null ){
             console.log("here")
             return
         }
-        console.log("edhar")
-        updateCurrentAlbumSong(songs[index])
-        updateSong(songs[e.target.parentElement.className==="song"?e.target.parentElement.id:e.target.id])
-        musicControl(songs[index])
+        console.log(artist)
+        updateCurrentAlbumSong({owner:artist,...song[index]},index)
+        updateSong({owner:artist,...song[index]},index)
+        musicControl(song[index])
     }
+
     
     return(
         <>
            <div className="song" id={id} onClick={(e)=> update(e) }>
-            <img src={src} className="active image"/>
+            <img src={thumbnail} />
 
             <div className="nonactive">
             <i className="far fa-3x fa-play-circle" id="playstate" ></i>

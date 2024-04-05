@@ -7,6 +7,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { useEffect, useMemo, useState } from "react";
 import { duration } from "@mui/material";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 
 
 let songs = [
@@ -26,9 +27,29 @@ let songs = [
 
 
 function Footer(){
+    
 
-    const song = useSelector((state)=>state.song.songsData)
-   // console.log(song)
+    let song1 = useSelector((state)=>state.song.songsData)
+    let albumData = useSelector((state)=>state.song.albumData)
+    let song2 = albumData.songs
+    let song3 = useSelector((state)=>state.song.searchData)
+
+    let song =""
+    const location = useLocation()
+    
+    if(location.pathname=='/'){
+        song = song1
+    }
+
+    else if(location.pathname=='/music'){
+        song = song2
+    }
+
+    else if(location.pathname=='/search'){
+        song = song3
+    }
+
+    console.log(song)
 
     const {currentSong,musicControl,audioElement,play,updateSong} = useCurrentSong()
     const [volume,setVolume]  = useState(audioElement.volume)
@@ -39,6 +60,7 @@ function Footer(){
         console.log(audioElement)
         console.log(audioElement.duration)
         setDuration(parseInt(audioElement.duration/60) +": "+parseInt(audioElement.duration)%60+"")
+        console.log(currentSong)
     },[audioElement,currentSong])
     
 
@@ -59,10 +81,13 @@ function Footer(){
         const prevId = parseInt(currentSong.id)
         console.log(prevId)
         console.log(song[prevId+1])
-        if(prevId<9){
+        if(prevId<song.length-1){
             updateSong(song[prevId+1],prevId+1)
             musicControl(song[prevId+1]);
-           
+        }
+        else{
+            updateSong(song[0],1)
+            musicControl(song[0]);
         }
     }
 

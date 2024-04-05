@@ -1,35 +1,15 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import useCurrentSong from "../contexts/CurrentSongContext";
 import Image  from "./Image"
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
-import { getSongs } from "../Reducer/songSlice";
-import { artistsFollowing } from "../Reducer/followSlice";
+import Music from "./Music";
 
 
 
-function Home(){
-    const dispatch = useDispatch()
-    useEffect(()=>{
-      dispatch(getSongs(""))
-   
-    },[])
-    let song = useSelector((state)=>state.song.songsData)
+function Search(){
+    const song = useSelector((state)=>state.song.searchData)
     console.log(song)
-
-    if(!song){
-        song= []
-    }
-    const {updateSong,currentSong} = useCurrentSong();
-
-    const Images = document.querySelectorAll("Image");
-    Images.forEach((image)=>{
-        image.addEventListener('click',function(e){
-                console.log("here my love")
-                updateSong(song[e.target.id])
-                console.log(currentSong)
-        })
-    })
+    const {currentAlbumSong,updateCurrentAlbumSong} = useCurrentSong()
+    
 
 
     let songs = [
@@ -48,14 +28,40 @@ function Home(){
     return(
         
         <>  
-            <div className="box">
-            {
-                song.map((song,index)=> <Image src= {song.thumbnail} songName ={song.title} audiosrc= {song.songFile} id= {index}/>)
-            }
-
+              
+    <div className="rowi">
+        <div className="left">
+            <div className="image">
+                <img src={currentAlbumSong.thumbnail} alt=""/>
             </div>
-    </>
+            <h1>{currentAlbumSong.title}</h1>
+            <p>{currentAlbumSong.owner}</p>
+
+        </div>
+
+        <div className="songItemsList">
+
+            <div className="topi">
+                <h1>Queue</h1>
+                <div className="f">
+                    <i className="fa-solid fa-ellipsis"></i>
+                    <button className="save">Save</button>
+                    <button className="clear">Clear</button>
+                </div>
+            </div>
+        
+       
+{
+    
+    song.map((song,index)=><Music thumbnail ={song.thumbnail} songName={song.title} src="" singer={song.owner} id = {index} type="song"/>)
+}
+</div>
+       </div>
+
+        
+        </>
+    
     )
 }
 
-export default Home
+export default Search
