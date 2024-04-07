@@ -18,9 +18,13 @@ app.use(cookieParser())
 import userRouter from "./router/user.router.js"
 import songRouter from "./router/song.router.js"
 import followerRouter from "./router/follower.router.js"
+import playlistRouter from "./router/playlist.router.js"
+
 
 app.use('/api/v1/users',userRouter)
 app.use('/api/v1/songs',songRouter)
 app.use('/api/v1/follower',followerRouter)
+app.use('/api/v1/playlist',playlistRouter)
+
 export {app}
 

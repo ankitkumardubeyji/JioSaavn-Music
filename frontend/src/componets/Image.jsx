@@ -1,12 +1,21 @@
 import { useState } from "react";
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import useCurrentSong from "../contexts/CurrentSongContext";
-import { useSelector } from "react-redux";
+import { useSelector,useDispatch } from "react-redux";
+import { Link,useNavigate } from "react-router-dom";
+import { addSongToPlaylist } from "../Reducer/playlistSlice";
 function Image(props){
+
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
+
     console.log(props)
     const {updateSong,currentSong,musicControl} = useCurrentSong();
       let song = useSelector((state)=>state.song.songsData)
-      
-   
+      const userPlaylists = useSelector(state=>state.playlist.userPlaylists)
+      console.log(userPlaylists)
+
     console.log(song)
 
     let songs = [
@@ -23,10 +32,10 @@ function Image(props){
     ]
 
     function update(e){
-        let index = e.target.parentElement.className==="box1"?e.target.parentElement.id:e.target.id
+        let index = e.target.parentElement.id
        console.log(songs[e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id]) 
        console.log(e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id)
-       updateSong(song[e.target.parentElement.className=="box1"?e.target.parentElement.id:e.target.id],index)
+       updateSong(song[index],index)
        musicControl(song[index])
        console.log(currentSong)
        
@@ -39,12 +48,35 @@ function Image(props){
     console.log(props)
     return (
         <>
-          <div className="box1" onClick={(e)=>update(e)} id={props.id}>
+          <div className="box1 "  id={props.id}
+           onMouseOver={()=>{document.getElementById(props.id).classList.add('active')}}
+           onMouseOut={()=>document.getElementById(props.id).classList.remove('active')}
+           onContextMenu={()=> document.getElementById(props.id).querySelector('.dropdown').classList.toggle('dropActive')}
+           
+           >
                         <img src= {props.src} alt=""/>
                         <p className="songName">{props.songName}</p>
-                        <div className="layer">
+                        <div className="layer"onClick={(e)=>update(e)}>
+                          <FavoriteIcon style={{color:"red"}}/>
+                          <PlayArrowIcon style={{color:"white"}}/>
+                        </div>
+
+                        <div className="dropdown">
+                          <h2 onMouseEnter={()=>document.getElementById(props.id).querySelector('.PlaylistBox').classList.add('addPlaylistActive')}
                            
-                            <p><span></span></p>
+                          >Add To Playlist</h2>
+                            <div className="PlaylistBox"  onMouseLeave={()=>document.getElementById(props.id).querySelector('.PlaylistBox').classList.remove('addPlaylistActive')} >
+                              <h3> <Link to="/cp">+ Create new Playlist</Link></h3>
+                                <ul style={{marginLeft:"10px"}}>
+                                  {
+                                      userPlaylists.map((item)=>
+                                        <li style={{marginLeft:"17px"}} onClick={()=>dispatch(addSongToPlaylist(`${props._id}/${item._id}`))}>{item.name}  </li>
+                                      )
+                                  }
+                                </ul>
+
+                            </div>
+                          <h3>PlaySong</h3>
                         </div>
                     </div>
         </>

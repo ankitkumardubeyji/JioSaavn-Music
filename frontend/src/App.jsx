@@ -24,6 +24,8 @@ import { useDispatch } from 'react-redux'
 import { addSongToListenHistory, getSongs } from './Reducer/songSlice'
 import Search from './componets/Search'
 import YourSongs from './componets/YourSongs'
+import CreatePlaylist from './componets/CreatePlaylist'
+import Playlist from './componets/Playlist'
 function App() {
 
   const dispatch = useDispatch()
@@ -90,6 +92,8 @@ const router = createBrowserRouter(
         <Route path='search' element ={<Search/>}/>
         <Route path='history' element ={<History/>}/>
         <Route path='ys' element ={<YourSongs/>}/>
+        <Route path='cp' element ={<CreatePlaylist/>}/>
+        <Route path ='p' element ={<Playlist/>}/>
     </Route>
   )
 )

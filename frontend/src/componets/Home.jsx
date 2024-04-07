@@ -50,7 +50,7 @@ function Home(){
         <>  
             <div className="box">
             {
-                song.map((song,index)=> <Image src= {song.thumbnail} songName ={song.title} audiosrc= {song.songFile} id= {index}/>)
+                song.map((song,index)=> <Image src= {song.thumbnail} songName ={song.title} audiosrc= {song.songFile} id= {index} _id={song._id}/>)
             }
 
             </div>
