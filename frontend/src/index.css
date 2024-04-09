@@ -471,3 +471,92 @@ h1{
   flex-direction: column;
   width: 100%;
 }
+
+
+.menu{
+  display: none;
+}
+
+
+@media screen and (min-width: 200px) and (max-width: 900px) {
+  .box{
+    position: absolute;
+  top:10px;
+    display: grid;
+    grid-template-columns: 150px 150px ;
+    gap: 10px;
+    margin-left: 30px;
+  }
+
+  .left-slide{
+    display: none;
+  }
+
+  .left-slide-active{
+    display: flex;
+    z-index: 10;
+    background-color: wheat;
+    width: 50%;
+    position: fixed;
+    top:20px;
+  }
+
+  .row{
+    display: block;
+  }
+
+
+  .logo .items{
+    display: none;
+  }
+
+
+  .side-nav  :nth-child(1){
+    display: none;
+  }
+
+  .search-box{
+    margin-right: 10px;
+    width: 750px;
+  }
+
+
+  .rowi{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .topi{
+    display: none;
+  }
+
+  .rowi .left .image{
+    width: 150px;
+  }
+
+  .rowi .left{
+    display: flex;
+    flex-direction: column;
+    padding: 9px;
+    align-items: center;
+    width: 400px
+  }
+
+  .songItemsList .song{
+      display: flex;
+      gap: 30px;
+      width: 100%;
+      border-radius: 12px;
+      align-items: center;
+      padding: 10px 34px;
+      cursor: pointer;
+  }
+
+  .row .row{
+    flex-direction: column;
+  }
+
+  .box1 p{
+    text-align: left;
+  }
+}

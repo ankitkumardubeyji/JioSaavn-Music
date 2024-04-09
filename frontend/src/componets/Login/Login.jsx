@@ -1,7 +1,7 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { validateUserAccount } from "../../Reducer/authSlice";
 
 function Login() {
@@ -106,8 +106,8 @@ function Login() {
           </form>
 
           <p className="mt-10 text-center text-sm text-gray-500">
-            Not a member?
-            <a href="#" className="font-semibold leading-6 text-red-600 hover:text-indigo-500">Start a 14 day free trial</a>
+            Dont have account?
+            <Link to="/register" className="font-semibold leading-6 text-red-600 hover:text-indigo-500">Create Account</Link>
           </p>
         </div>
       </div>

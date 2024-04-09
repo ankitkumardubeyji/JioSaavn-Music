@@ -5,6 +5,7 @@ import {useDispatch, useSelector } from 'react-redux';
 import {logout} from '../Reducer/authSlice';
 import { useState } from 'react';
 import { getArtistProfile, getSongs, searchSongs } from '../Reducer/songSlice';
+import MenuIcon from '@mui/icons-material/Menu';
 
 
 function Header(){
@@ -28,7 +29,10 @@ function Header(){
     console.log(isLoggedIn)
     console.log("here comes the data "+data.avatar)
 
-    
+    function handleMenu(){
+        console.log("hine aawa")
+        document.getElementsByClassName("left-slide")[0].classList.toggle('left-slide-active')
+    }
 
     function handleSubmit(e){
         e.preventDefault()
@@ -51,6 +55,7 @@ const [searchValue,setSearchValue] = useState("")
          <div className="header">
         <nav>
             <div className="logo">
+                <MenuIcon className='menu' onClick={handleMenu}/>
                 <img src="https://tse2.mm.bing.net/th?id=OIP.R137HYqG1Wnv0ADZ2bFkbQHaCn&pid=Api&P=0&h=180" alt=""/>
                 <div className="items">
                 <Link to="/music">Music</Link>

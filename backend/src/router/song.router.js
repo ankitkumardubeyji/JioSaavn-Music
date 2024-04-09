@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { upload } from "../middleware/multer.middleware.js";
+
 import { getAllSongs, getYourSongs, publishSong } from "../controllers/song.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
-
+import {upload} from "../middleware/multer.middleware.js"
 
 
 
