@@ -11,7 +11,7 @@ app.use(cors({
 */
 app.use(cors(
     {
-        origin:[],
+        origin:[https://jio-saavn-music-637x.vercel.app],
         methods:["POST,"GET"],
         credentials:true
     }    
