@@ -4,12 +4,13 @@ import cors from "cors";
 const app = express();
 
 // Set up CORS middleware
+/*
 app.use(cors({
     origin: ["https://jio-saavn-music-637x.vercel.app"],
     methods: ["POST", "GET", "PATCH"],
     credentials: true
 }));
-
+*/
 // Allow preflight requests
 app.options('*', cors());
 
