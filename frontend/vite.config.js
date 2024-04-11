@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   server:{
       proxy:{
-        '/api':'jio-saavn-music1.vercel.app'
+        '/api':'https://jio-saavn-music1.vercel.app'
       }
   },
   plugins: [react()],
