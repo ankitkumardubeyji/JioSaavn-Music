@@ -15,7 +15,7 @@ const initialState = {
 export const createAccount = createAsyncThunk("auth/signup",async(data)=>{
     try{
         let result =""
-        const res = axios.post("https://jio-saavn-music1.vercel.app/api/v1/users/register",data)
+        const res = axios.post("/api/v1/users/register",data)
         toast.promise(res,{
             loading:"wait! creating your account...",
             success:(data)=>{
@@ -37,7 +37,7 @@ export const createAccount = createAsyncThunk("auth/signup",async(data)=>{
 export const validateUserAccount = createAsyncThunk("auth/login",async(data)=>{
     let result ={}
     console.log("came here for the login");
-    const res = axios.post("https://jio-saavn-music1.vercel.app/api/v1/users/login",data)
+    const res = axios.post("/api/v1/users/login",data)
     toast.promise(res,{
         loading:"wait logging you in!",
         success:(data)=>{
