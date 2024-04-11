@@ -12,7 +12,7 @@ app.use(cors({
 }));
 */
 // Allow preflight requests
-app.options('*', cors());
+//app.options('*', cors());
 
 // Other middleware
 app.use(express.json({ limit: "16kb" }));
