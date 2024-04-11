@@ -2,7 +2,7 @@
     "rewrites": [
          {
             "source": "/api/(.*)",
-            "destination": "https://jiomusicbackend.onrender.com"
+            "destination": "https://jio-saavn-music1.vercel.app/api"
         },
         {
             "source": "/(.*)",
