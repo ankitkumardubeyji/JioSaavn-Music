@@ -11,8 +11,8 @@ app.use(cors({
 */
 app.use(cors(
     {
-        origin:[https://jio-saavn-music-637x.vercel.app],
-        methods:["POST,"GET"],
+        origin:["https://jio-saavn-music-637x.vercel.app"],
+        methods:["POST,"GET","PATCH"],
         credentials:true
     }    
 app.use(express.json({limit:"16kb"}))
